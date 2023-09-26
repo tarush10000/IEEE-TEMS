@@ -221,3 +221,9 @@ function animateTween() {
 }
 
 animateTween();
+
+
+
+
+
+const about = document.getElementById('about');

@@ -22,4 +22,14 @@ canvas{
 #main{
   position: absolute;
   top: 0;
+  background-color: transparent; 
+}
+
+#about {
+  position: absolute;
+  right: -100%; 
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  transition: right 0.5s ease;
 }
