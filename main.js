@@ -17,8 +17,10 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(5000);
 
-//transparent bg
+//transparent bg and video
 renderer.setClearColor( 0x000000, 0 ); // the default
+document.getElementById("bgvideo").playbackRate = 0.5;
+
 
 renderer.render(scene, camera);
 //IEEE TEMS logo ka dabba
