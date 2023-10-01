@@ -15,6 +15,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputEncoding = THREE.sRGBEncoding;
 camera.position.setZ(5000);
 
 //transparent bg and video
@@ -33,15 +34,25 @@ IEEElogo.receiveShadow = true;
 scene.add( IEEElogo );
 
 
+//Photos
+const phgeo = new THREE.BoxGeometry( 25, 33.33, 0 );
+const phtex = new THREE.TextureLoader().load('images/2022-23.png'); 
+phtex.encoding = THREE.sRGBEncoding;
+const phmat = new THREE.MeshStandardMaterial( { map: phtex,color: 0xffffff,roughness:1, metalness:0.9, transparent: true}); 
+const ph = new THREE.Mesh( phgeo, phmat ); 
+ph.position.set(0, 0, 400);
+
+const ph2geo = new THREE.BoxGeometry( 25, 33.33, 0 );
+const ph2tex = new THREE.TextureLoader().load('images/2021-22.png'); 
+ph2tex.encoding = THREE.sRGBEncoding;
+const ph2mat = new THREE.MeshStandardMaterial( { map: ph2tex,color: 0xffffff,roughness:1, metalness:0.9, transparent: true}); 
+const ph2 = new THREE.Mesh( ph2geo, ph2mat ); 
+ph2.position.set(0, 0, 700);
+
+
 //ambient light jo abhi bahut kuch kar rahi hai
 const ambientLight = new THREE.AmbientLight(0xffffff, 10);
 scene.add(ambientLight);
-
-
-//point light jo abhi kuch nahi kar rahi 
-const pointLight = new THREE.PointLight(0xffffff, 1000);
-scene.add(pointLight);
-
 
 //helpers
 // const pointLightHelper = new PointLightHelper(pointLight);
@@ -53,6 +64,10 @@ scene.add(pointLight);
 
 //camera rotation with mouse
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.enablePan = false;
+controls.enableRotate = false;
+controls.enableDamping = true;
+controls.dampingFactor = 0.5;
 
 function animateCameraPosition() {
   const initialPosition = {z : 5000 };
@@ -65,12 +80,17 @@ function animateCameraPosition() {
     .onUpdate(() => {
       camera.position.setZ(initialPosition.z);
     })
+    .onComplete(() => {
+      setTimeout(() => {
+        scene.add(ph);
+        scene.add(ph2);
+      }, 1000);
+    })
     .start();
 }
 
 // Call the camera position animation on startup
 animateCameraPosition();
-
 //random stars in background
 // function addStar() {
 //   const geometry = new THREE.SphereGeometry(0.1, 24, 24);
@@ -120,13 +140,13 @@ function animate() {
 }
 animate();
 
-//domains
+//balls
 const rotatingSpheres = [];
 function rotatingelements(){
   
   const webloader = new THREE.TextureLoader();
   const webgeometry = new THREE.SphereGeometry(0.1,24,24);
-  const webmaterial = new THREE.MeshBasicMaterial({color: 0x1111ff});
+  const webmaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
   const web = new THREE.Mesh(webgeometry, webmaterial);
   web.position.x = 10;
   web.position.y = -1;
@@ -134,7 +154,7 @@ function rotatingelements(){
 
   const machineloader = new THREE.TextureLoader();
   const machinegeometry = new THREE.SphereGeometry(0.1,24,24);
-  const machinematerial = new THREE.MeshBasicMaterial({color: 0xf111ff});
+  const machinematerial = new THREE.MeshBasicMaterial({color: 0xffffff});
   const machine = new THREE.Mesh(machinegeometry, machinematerial);
   machine.position.x = 8;
   machine.position.y = -5;
@@ -142,7 +162,7 @@ function rotatingelements(){
 
   const iotloader = new THREE.TextureLoader();
   const iotgeometry = new THREE.SphereGeometry(0.1,24,24);
-  const iotmaterial = new THREE.MeshBasicMaterial({color: 0xf1113f});
+  const iotmaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
   const iot = new THREE.Mesh(iotgeometry, iotmaterial);
   iot.position.x = 6;
   iot.position.y = -9;
@@ -150,7 +170,7 @@ function rotatingelements(){
 
   const devloader = new THREE.TextureLoader();
   const devgeometry = new THREE.SphereGeometry(0.1,24,24);
-  const devmaterial = new THREE.MeshBasicMaterial({color: 0x731139});
+  const devmaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
   const dev = new THREE.Mesh(devgeometry, devmaterial);
   dev.position.x = 4;
   dev.position.y = -13;
@@ -158,7 +178,7 @@ function rotatingelements(){
 
   const blogloader = new THREE.TextureLoader();
   const bloggeometry = new THREE.SphereGeometry(0.1,24,24);
-  const blogmaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
+  const blogmaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
   const blog = new THREE.Mesh(bloggeometry, blogmaterial);
   blog.position.x = 2;
   blog.position.y = -17;
@@ -166,7 +186,7 @@ function rotatingelements(){
 
   const designloader = new THREE.TextureLoader();
   const designgeometry = new THREE.SphereGeometry(0.1,24,24);
-  const designmaterial = new THREE.MeshBasicMaterial({color: 0x2eeeef});
+  const designmaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
   const design = new THREE.Mesh(designgeometry, designmaterial);
   design.position.x = 0;
   design.position.y = -16;
@@ -178,45 +198,46 @@ function rotatingelements(){
 
 const rotatingSpheresArray = rotatingelements();
 
-const container = document.getElementById("startup");
-container.addEventListener("mousemove", onMouseMove);
+// //Animation for rotating balls 
+// const container = document.getElementById("startup");
+// container.addEventListener("mousemove", onMouseMove);
 
-function onMouseMove(event) {
-  // Calculate mouse position relative to the container
-  const containerBounds = container.getBoundingClientRect();
-  const mouseX = (event.clientX - containerBounds.left) / containerBounds.width * 2 - 1;
-  const mouseY = -((event.clientY - containerBounds.top) / containerBounds.height) * 2 + 1;
+// function onMouseMove(event) {
+//   // Calculate mouse position relative to the container
+//   const containerBounds = container.getBoundingClientRect();
+//   const mouseX = (event.clientX - containerBounds.left) / containerBounds.width * 2 - 1;
+//   const mouseY = -((event.clientY - containerBounds.top) / containerBounds.height) * 2 + 1;
 
-  // Create a raycaster and cast a ray from the camera
-  const raycaster = new THREE.Raycaster();
-  const mouseVector = new THREE.Vector2(mouseX, mouseY);
-  raycaster.setFromCamera(mouseVector, camera);
+//   // Create a raycaster and cast a ray from the camera
+//   const raycaster = new THREE.Raycaster();
+//   const mouseVector = new THREE.Vector2(mouseX, mouseY);
+//   raycaster.setFromCamera(mouseVector, camera);
 
-  // Update the light position with mouse coordinates
-  pointLight.position.x = mouseX;
-  pointLight.position.y = mouseY;
-  pointLight.position.z = 10;
+//   // Update the light position with mouse coordinates
+//   pointLight.position.x = mouseX;
+//   pointLight.position.y = mouseY;
+//   pointLight.position.z = 10;
 
-  // Check for intersections with the cuboid
-  const intersects = raycaster.intersectObject(IEEElogo);
+//   // Check for intersections with the cuboid
+//   const intersects = raycaster.intersectObject(IEEElogo);
 
-  console.log(intersects.length);
+//   console.log(intersects.length);
 
-  // Scale spheres based on intersection
-  rotatingSpheresArray.forEach((sphere) => {
-    if (intersects.length == 1) {
-      new TWEEN.Tween(sphere.scale)
-        .to({ x: 10, y: 10, z: 10 }, 100)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start();
-    } else {
-      new TWEEN.Tween(sphere.scale)
-        .to({ x: 0, y: 0, z: 0 }, 100) 
-        .easing(TWEEN.Easing.Quadratic.Out) 
-        .start();
-    }
-  });
-}
+//   // Scale spheres based on intersection
+//   rotatingSpheresArray.forEach((sphere) => {
+//     if (intersects.length == 1) {
+//       new TWEEN.Tween(sphere.scale)
+//         .to({ x: 10, y: 10, z: 10 }, 100)
+//         .easing(TWEEN.Easing.Quadratic.Out)
+//         .start();
+//     } else {
+//       new TWEEN.Tween(sphere.scale)
+//         .to({ x: 0, y: 0, z: 0 }, 100) 
+//         .easing(TWEEN.Easing.Quadratic.Out) 
+//         .start();
+//     }
+//   });
+// }
 
 function animateTween() {
   requestAnimationFrame(animateTween);
